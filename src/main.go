@@ -19,7 +19,7 @@ func main() {
 	flag.Parse()
 	config.LoadConfig(*confPath)
 
-	robot.GetRobotMgr().Init(1000, 10)
+	robot.GetRobotMgr().Init(1000, 1000)
 
 	wait()
 }

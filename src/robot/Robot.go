@@ -13,6 +13,7 @@ type Robot struct {
 	roleId   uint32
 	cards    []uint32
 	opera    int32
+	Players  []*protodef.EntityPlayer
 }
 
 func NewRobot(id uint64) *Robot {
@@ -44,6 +45,13 @@ func (r *Robot) Update() {
 	}
 }
 
+func (r *Robot) OnEnterRoom(players []*protodef.EntityPlayer) {
+	r.Players = make([]*protodef.EntityPlayer, len(players))
+	for i, player := range players {
+		r.Players[i] = player
+	}
+}
+
 func (r *Robot) OnGameStart() {
 	r.opera = 0
 	go r.operation()
@@ -56,7 +64,7 @@ func (r *Robot) operation() {
 		select {
 		case <-createTick.C:
 			r.opera++
-			op := r.opera % 4
+			op := r.opera % 6
 			if op == 1 {
 				r.SelectCards()
 			} else if op == 2 {
@@ -73,10 +81,10 @@ func (r *Robot) operation() {
 }
 
 func (r *Robot) Login() {
-	log.Println("Login")
+	log.Println("Login", r.PlayerId)
 	req := &protodef.ReqLogin{}
-	req.Idfa = ""
-	req.Idfv = ""
+	req.Idfa = string(r.PlayerId)
+	req.Idfv = string(r.PlayerId)
 	req.Guid = string(r.PlayerId)
 	req.Device = "linux"
 	req.Platform = "robot"
@@ -90,7 +98,7 @@ func (r *Robot) HeatBeat() {
 }
 
 func (r *Robot) MatchGame() {
-	log.Println("MatchGame")
+	log.Println("MatchGame", r.PlayerId)
 
 	req := &protodef.ReqMatchGame{}
 	req.SceneLevel = 1
@@ -121,32 +129,35 @@ func (r *Robot) MatchGame() {
 		Id:      1,
 		CfgId:   int32(r.roleId),
 		SkinIdx: 0,
+		Hp:      200,
+		MaxHp:   200,
+		Name:    string(r.roleId),
 	}
 	req.Player.Roles[0] = role
 	r.Net.ReqMatchGame(req)
 }
 
 func (r *Robot) Reconnect() {
-	log.Println("Reconnect")
+	log.Println("Reconnect", r.PlayerId)
 	req := &protodef.ReqGameReconnect{}
 	r.Net.ReqReconnect(req)
 }
 
 func (r *Robot) ReconnectFinish() {
-	log.Println("ReconnectFinish")
+	log.Println("ReconnectFinish", r.PlayerId)
 	req := &protodef.ReqReconnectFinish{}
 	r.Net.ReqReconnectFinish(req)
 }
 
 func (r *Robot) GameReady() {
-	log.Println("GameReady")
+	log.Println("GameReady", r.PlayerId)
 
 	req := &protodef.ReqGameReady{}
 	r.Net.ReqGameStart(req)
 }
 
 func (r *Robot) SelectCards() {
-	//log.Println("SelectCards")
+	log.Println("SelectCards", r.PlayerId)
 
 	req := &protodef.ReqSelectCards{}
 	req.Cards = make([]*protodef.EntityCard, 1)
@@ -160,7 +171,7 @@ func (r *Robot) SelectCards() {
 }
 
 func (r *Robot) SelectRole() {
-	//log.Println("SelectRole")
+	log.Println("SelectRole", r.PlayerId)
 
 	req := &protodef.ReqSelectRole{}
 	req.Frame = 0
@@ -168,7 +179,7 @@ func (r *Robot) SelectRole() {
 }
 
 func (r *Robot) FingerMove() {
-	//log.Println("FingerMove")
+	log.Println("FingerMove", r.PlayerId)
 
 	req := &protodef.ReqFingerMove{}
 	req.Dir = &protodef.Vector2{}
@@ -178,7 +189,7 @@ func (r *Robot) FingerMove() {
 }
 
 func (r *Robot) ShootBulelt() {
-	//log.Println("ShootBulelt")
+	log.Println("ShootBulelt", r.PlayerId)
 
 	req := &protodef.ReqShootBullet{}
 	req.Dir = &protodef.Vector2{}
@@ -187,8 +198,12 @@ func (r *Robot) ShootBulelt() {
 	req.InstanceId = 1
 	req.OriginCard = &protodef.EntityCard{Id: 101}
 	req.ActualCard = &protodef.EntityCard{Id: 101}
-	req.Entities = &protodef.EntityAll{}
-
+	req.Entities = &protodef.EntityAll{
+		Players: make([]*protodef.EntityPlayer, len(r.Players)),
+	}
+	for i, player := range r.Players {
+		req.Entities.Players[i] = player
+	}
 	r.Net.ReqShootBullet(req)
 }
 
@@ -197,6 +212,11 @@ func (r *Robot) ActionEnd() {
 
 	req := &protodef.ReqActionEnd{}
 	req.Type = 1
-	req.Entities = &protodef.EntityAll{}
+	req.Entities = &protodef.EntityAll{
+		Players: make([]*protodef.EntityPlayer, len(r.Players)),
+	}
+	for i, player := range r.Players {
+		req.Entities.Players[i] = player
+	}
 	r.Net.ReqActionEnd(req)
 }

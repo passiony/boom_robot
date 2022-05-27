@@ -2,6 +2,7 @@ package robot
 
 import (
 	protodef "ROBOT/src/network/protogo"
+	"github.com/golang/protobuf/proto"
 	"log"
 )
 
@@ -21,6 +22,12 @@ func (l *GameHander) OnGameReconnect(robot *Robot, msg *protodef.Packet) {
 
 func (l *GameHander) OnReconnectFinish(robot *Robot, msg *protodef.Packet) {
 	log.Println("重连 2")
+	serverPacket := &protodef.NtfReconnectFinish{}
+	err := proto.Unmarshal(msg.Data, serverPacket)
+	if err != nil {
+		return
+	}
+	robot.OnEnterRoom(serverPacket.Entities.Players)
 	robot.OnGameStart()
 }
 

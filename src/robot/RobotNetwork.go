@@ -60,11 +60,11 @@ func (n *RobotNetwork) connect(netCfg *config.NetConfig) {
 
 func (n *RobotNetwork) onConnect(session cellnet.Session) {
 	n.session = session
-	log.Println("onConnect:", session.ID())
+	log.Println("onConnect:", n.robot.PlayerId)
 	n.robot.Login()
 }
 func (n *RobotNetwork) onDisconnect(session cellnet.Session) {
-	log.Println("onDisconnect:", session.ID())
+	log.Println("onDisconnect:", n.robot.PlayerId)
 }
 
 func (n *RobotNetwork) onServerPacket(msg *protodef.Packet) {

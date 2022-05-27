@@ -27,5 +27,12 @@ func (l *MatchHander) OnRspMatch(robot *Robot, msg *protodef.Packet) {
 
 func (l *MatchHander) OnRoomReady(robot *Robot, msg *protodef.Packet) {
 	log.Println("匹配成功")
+	serverPacket := &protodef.NtfRoomReady{}
+	err := proto.Unmarshal(msg.Data, serverPacket)
+	if err != nil {
+		return
+	}
+
+	robot.OnEnterRoom(serverPacket.Players)
 	robot.GameReady()
 }
