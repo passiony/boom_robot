@@ -1,0 +1,117 @@
+syntax = "proto3";
+package league;
+option go_package="protodef";
+import "common.proto";
+
+//创建工会
+message req_create_league {
+    string league_name = 1;
+    string league_desc = 2;
+}
+
+message ntf_create_league{
+    common.league_entity league = 1;
+    repeated common.league_player players = 2;
+    int32 error_code = 3;
+}
+
+//请求我的工会信息
+message req_my_league {
+}
+
+message ntf_my_league{
+    common.league_entity league = 1;
+    repeated common.league_player players = 2;
+    int32 error_code = 3;
+}
+
+//解散工会
+message req_dismiss_league{
+    int32 league_id = 1;
+}
+
+message ntf_dismiss_league{
+	int64 creator_id = 1;
+    int32 error_code = 2;
+}
+
+//邀请别人加入我的工会
+message req_invite_other_join_league{
+    int64 player_id = 1;
+}
+
+message ntf_invite_other_join_league{
+    int32 error_code = 1;
+    int32 player_id = 2;
+    common.league_player player = 3;
+}
+
+//别人邀请我加入他的工会
+message ntf_invite_me_join_league{
+    common.league_entity league = 1;
+    common.league_player creator = 2;
+}
+
+//请求加入工会
+message req_join_league{
+    string league_code = 1;
+}
+
+message ntf_join_league{
+    common.league_entity league = 1;
+    repeated common.league_player players = 2;
+    int32 error_code = 3;
+}
+
+//请求离开工会
+message req_leave_league{
+    int32 league_id = 1;
+}
+
+message ntf_leave_league{
+    int32 error_code = 1;
+    common.league_player player = 2;
+}
+
+//请求工会列表
+message req_league_list{
+	int32 page = 1;
+	int32 count = 2;
+}
+
+message ntf_league_list{
+    repeated common.league_entity leagues = 1;
+}
+
+//请求邀请玩家列表
+message req_invite_player_list{
+	int32 page = 1;
+	int32 count = 2;
+}
+
+message ntf_invite_player_list{
+    repeated common.league_player players = 1;
+}
+
+//邮件
+message req_mail_list{
+}
+//3219=league.ntf_mail
+message ntf_mail{
+    int32 error_code = 1;
+    common.mail_entity mail = 2;
+}
+//3221=league.rsp_mail_list
+message rsp_mail_list{
+    int32 error_code = 1;
+    repeated common.mail_entity mails = 2;
+}
+
+message req_delete_mail{
+    int64 mail_id = 1;
+}
+
+//工会异常
+message ntf_league_error{
+    int32 error_code = 1;
+}

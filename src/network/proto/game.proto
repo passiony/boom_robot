@@ -1,0 +1,451 @@
+syntax = "proto3";
+package game;
+option go_package="protodef";
+import "common.proto";
+
+//准备游戏req
+message req_game_ready {
+}
+
+//游戏开始ntf
+message ntf_game_start {
+}
+
+//请求重连
+message req_game_reconnect {
+}
+
+//重连游戏
+message ntf_game_reconnect{
+    int32 frame = 1;
+    string room_id = 2;
+    int32 map_id = 3;
+    int32 scene_id = 4;
+    int32 round_id = 5;
+    int32 game_type = 6;
+    int32 random_seed = 7;
+    common.entity_all entities = 8;
+    common.client_server server = 9;
+	int32 activity_id = 10; //活动ID
+    common.map_entity map_data = 11; //活动ID
+    int32 args = 12; //不同游戏类型所需要的参数
+	repeated common.entity_team team_entitys = 13 ; 
+}
+
+//重连完毕
+message req_reconnect_finish {
+}
+message ntf_reconnect_finish{
+    ntf_round_change round = 1;
+    common.entity_all entities = 2;
+}
+
+//投降
+message req_surrender{
+}
+
+message req_game_over{
+    int32 win_team = 1;
+    int32 match_cup = 2;
+    int32 rank_cup = 3;
+    int32 leaf = 4;
+    int32 frame = 5;
+    int32 result_type = 6;
+}
+
+//游戏结束ntf
+message ntf_game_over{
+    int32 frame = 1;
+    int32 win_team = 2; // 胜利teamId
+    int32 result_type = 3;
+	int32 activity_id = 4;
+	int32 win_streak = 5; //当前连赢
+	int32 lose_streak = 6; //当前连输
+    int64 first_playId = 7;  //先手玩家ID
+    int32 battle_time = 8; // 对战时长,掉线时间不算
+    repeated common.dazzling_action dazzling_actions  = 9; //亮眼操作
+	common.entity_all entities = 10;
+    common.best_replay best_replay = 11;
+    repeated common.battle_detail battle_detail = 12;
+    repeated common.settle_change settle_change = 13;
+}
+
+//玩家上线
+message ntf_player_online{
+}
+
+//玩家掉线
+message ntf_player_offline{
+}
+
+
+//事件动作开始
+message req_action_start{
+	int32 frame = 1;
+	int32 type = 2;
+}
+message ntf_action_start{
+	int32 frame = 1;
+	int32 type = 2;
+}
+
+//请求回合动画表现结束
+message req_action_end{
+    int32 frame = 1;
+    common.entity_all entities = 2;
+    int32 type = 3;
+    int64 playerId = 4;
+    int32 roleId = 5;
+    repeated common.action_buff buffs = 6; //致死buff的ids（毒刺）
+}
+
+//请求结束回合
+message req_round_end{
+    int32 frame = 1;
+}
+//回合切换
+message ntf_round_change{
+    int32 roundId = 1;
+    int64 playerId = 2;
+    int32 roleId = 3;
+    int32 mp = 4;
+    int32 maxMp = 5;
+    int32 frame = 6;                        //帧数
+    int32 time = 7;                         //回合剩余时间
+    bool hasSkill = 8;
+    repeated common.entity_card cards = 9;  //当前回合可以使用的四个卡牌
+    common.entity_all entities = 10;        //屏幕实时快照
+    int64 excutePlayerId = 11;              //执行AI的playerId
+}
+
+//选中卡牌
+message req_select_cards{
+    int32 frame = 1;
+    int32 mp = 2;
+    int32 tempMp = 3;
+    repeated common.entity_card cards = 4;
+}
+message ntf_select_cards{
+    int32 frame = 1;
+    int32 mp = 2;
+    int32 tempMp = 3;
+    repeated common.entity_card cards = 4;
+}
+
+//选中role
+message req_select_role{
+    int32 frame = 1;
+}
+message ntf_select_role{
+    int32 frame = 1;
+}
+
+//取消选中role
+message req_deselect_role{
+    int32 frame = 1;
+    bool isShoot = 2;
+}
+message ntf_deselect_role{
+    int32 frame = 1;
+    bool isShoot = 2;
+}
+
+//上报手指位置
+message req_finger_move{
+    float power = 2;
+    common.vector2 dir = 3;
+    int32 frame = 4;
+}
+
+//广播手指位置
+message ntf_finger_move{
+    float power = 2;
+    common.vector2 dir = 3;
+    int32 frame = 4;
+}
+
+//上报发射子弹
+message req_shoot_bullet{
+    int32 instanceId = 1;
+    int32 frame = 2;
+    float power = 3;
+    common.vector2 dir = 4;
+    int32 mp = 5;       //魔法值
+    int32 tempMp = 6;   //临时魔法值
+    common.entity_card originCard = 7;//原卡
+    common.entity_card actualCard = 8;//真实发射卡
+    common.entity_all entities = 9;
+}
+
+//广播发射子弹
+message ntf_shoot_bullet{
+    int32 instanceId = 1;
+    int32 frame = 2;
+    float power = 3;
+    common.vector2 dir = 4;
+    int32 mp = 5;       //魔法值
+    int32 tempMp = 6;   //临时魔法值
+    common.entity_card originCard = 7;//原卡
+    common.entity_card actualCard = 8;//真实发射卡
+    common.entity_all entities = 9;
+}
+
+//子弹时间
+message req_bullet_time{
+    int32 frame = 1;
+    common.vector2 origin = 2;
+    common.entity_all entities = 3;
+}
+
+//子弹时间
+message ntf_bullet_time{
+    int32 frame = 1;
+    common.vector2 origin = 2;
+    common.entity_all entities = 3;
+}
+
+//请求下一个角色
+message req_next_role{
+	int32 id = 1;
+    int32 frame = 2;
+}
+
+//返回下一个角色
+message ntf_next_role{
+	int32 id = 1;
+    int32 frame = 2;
+}
+
+//切换角色
+message req_change_role{
+    int32 id = 1;
+    int32 frame = 2;
+}
+
+//广播切换角色
+message ntf_change_role{
+	int32 id = 1;
+    int32 frame = 2;
+}
+
+//复活角色
+message req_revival_role{
+    int32 frame = 1;
+    common.entity_role role = 2;
+}
+
+//广播复活角色
+message ntf_revival_role{
+    int32 frame = 1;
+    common.entity_role role = 2;
+}
+
+//同步时间戳，切回合和重连发送
+message ntf_sync_frame{
+    int32 frame = 1;
+    int32 bulletInstance = 2;
+    int32 buffInstance = 3;
+    int32 dazzlingInstance = 4;
+    int32 summonInstance = 5;
+}
+
+//同步随机种子,取主动端最新地图快照
+message ntf_map_event{
+    int32 seed = 1;
+    common.entity_all entities = 3;
+}
+
+//恢复手中卡牌
+message req_return_bullet{
+    int32 frame = 1;
+    common.entity_card card = 2;
+}
+
+//恢复手中卡牌
+message ntf_return_bullet{
+    int32 frame = 1;
+    common.entity_card card = 2;
+}
+
+//添加 场景中静止子弹
+message req_add_stay_bullet{
+    int32 frame = 1;
+    common.entity_bullet bullet = 2;
+}
+
+//删除 场景中静止子弹
+message req_del_stay_bullet{
+    int32 frame = 1;
+    int32 roundId = 2;
+    int32 splitId = 3;
+    int32 bulletId = 4;
+}
+
+//添加buff
+message req_add_buff{
+	int32 frame = 1;
+	common.entity_buff buff = 2;
+}
+
+//删除buff
+message req_del_buff{
+    int32 frame = 1;
+    common.entity_buff buff = 2;
+}
+
+//同步随机数count
+message req_sync_random{
+    int32 frame = 1;
+    repeated int32 random_counts = 2;
+}
+
+//随机卡牌随机位置
+message req_randomPosition_bullet{
+    int32 frame = 1;
+    repeated common.role_info roles = 2;
+}
+
+//广播随机位置
+message ntf_randomPosition_bullet{
+    int32 frame = 1;
+    repeated common.role_info roles = 2;
+}
+
+//发送表情
+message req_emoji{
+    int32 frame = 1;
+    int32 roleId = 2;
+    int32 emojiId = 3;
+}
+
+//广播表情
+message ntf_emoji{
+    int32 frame = 1;
+    int32 roleId = 2;
+    int32 emojiId = 3;
+}
+
+//添加彩虹等召唤物
+message req_add_summon{
+    int32 frame = 1;
+    common.entity_summon summon = 2;
+}
+
+//删除彩虹等召唤物
+message req_del_summon{
+    int32 frame = 1;
+    common.entity_summon summon = 2;
+}
+
+message req_mark{
+    int32 markId = 1;
+    common.vector2 pos = 2;
+	int32 roleId = 3;
+}
+
+message ntf_mark{
+    int32 markId = 1;
+    common.vector2 pos = 2;
+	int32 roleId = 3;
+}
+
+message req_player_detail{
+	int32 instanceId = 1;	//唯一实例ID
+    int64 player_id = 2;
+    int32 detail_type = 3;
+    int32 detail_num = 4;
+}
+
+//ai消息转发
+message req_ai_message{
+    int32 frame = 1;
+    int64 playerId = 2;
+	int32 cmdId = 3;
+	bytes bytes = 4;
+}
+
+//#region -> PVE消息
+
+//房间准备pve
+message req_room_ready {
+    common.client_server server = 1;
+}
+
+//刷新cards,pve
+message req_refresh_cards{
+    int32 mp = 1;
+    int32 maxMp = 2;
+    int32 bulletInstance = 3;
+    repeated common.entity_card cards = 4;
+    common.client_server server = 5;
+}
+
+//刷新血量快照
+message req_refresh_hp{
+    common.entity_all entities = 1;
+}
+
+//刷新地图事件
+message req_refresh_map_event{
+    common.client_server server = 1;
+	int32 frame = 2;
+}
+
+//回合切换pve
+message req_round_change{
+    int32 roundId = 1;
+    int64 playerId = 2;
+    int32 roleId = 3;
+    int32 mp = 4;
+    int32 maxMp = 5;
+    int32 frame = 6;
+    int32 time = 7;
+    repeated common.entity_card cards = 8;
+    common.entity_all entities = 9;
+    common.client_server server = 10;
+}
+//#endregion -> PVE消息
+
+//#region -> 高光消息
+//发送亮眼操作
+message req_dazzling_action{
+	common.dazzling_action action = 1;
+	int64 playerId = 2;
+	int32 frame = 3;
+}
+//通知亮眼操作
+message ntf_dazzling_action{
+	common.dazzling_action action = 1;
+	int64 playerId = 2;
+	int32 frame = 3;
+}
+
+//子弹碰到物体（毒刺）
+message req_bullet_hit_entity{
+    int32 frame = 1;
+    int32 card_id = 2; //卡牌ID
+    repeated int32 buff_ids = 3; //卡牌击中角色产生的buffID
+}
+
+//拼接高光的插入帧
+message ntf_combo_insert{
+    int32 combo_type = 1;
+	common.round round = 2;
+    common.entity_all entities = 3;
+}
+
+message ntf_combo_judge{
+    int32 combo_type = 1;
+}
+
+//回合开始增加mp
+message req_add_mp{
+    int64 playerId = 1;
+    int32 mpAdd = 2;
+}
+
+message ntf_add_mp{
+    int64 playerId = 1;
+    int32 mpAdd = 2;
+}
+//#endregion -> 高光消息

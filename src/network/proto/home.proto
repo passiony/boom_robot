@@ -1,0 +1,146 @@
+syntax = "proto3";
+package home;
+option go_package="protodef";
+import "common.proto";
+
+//存档保存
+message req_save_archive{
+    common.archive_entity archive = 1;
+}
+
+//获取用户信息
+message req_player_info{
+}
+
+message ntf_player_info{
+}
+
+//设置玩家信息
+message req_set_player_info{
+    string playerName = 1;
+    int32 gold = 2;
+    int32 gem = 3;
+    int32 exp = 4;
+    int32 level = 5;
+    int32 aircraftId = 6;
+    int32 roleId = 7;
+    int32 skinIdx = 8;
+    string flag = 9;
+}
+message rsp_set_player_info{
+    string playerName = 1;
+    int32 gold = 2;
+    int32 gem = 3;
+    int32 exp = 4;
+    int32 level = 5;
+    int32 aircraftId = 6;
+    int32 roleId = 7;
+    int32 skinIdx = 8;
+    string flag = 9;
+    int32 error_code = 10;
+}
+
+//内购验证
+message req_iap_verify{
+
+}
+
+//请求排行榜
+message req_rank_data{
+    int32 page = 1;
+    int32 count = 2;
+}
+
+//请求我的排行数据
+message req_my_rank_data{
+}
+
+//请求赛季数据
+message req_season_data{
+}
+
+//请求重置赛季
+message req_reset_season{
+}
+
+//请求活动数据
+message req_active_data{
+}
+
+//请求保存活动数据
+message req_save_active_info{
+}
+
+//获取大转盘数据
+message req_luckywheel_data{
+}
+//请求转盘奖励
+message req_raffle_luckywheel{
+}
+
+//请求签到数据
+message req_dailysign_data{
+}
+
+//请求签到奖励
+message req_sign_in{
+    int32 userId = 1;//用户id
+    int32 addition = 2;//补签
+    int32 time_offset = 3;//时间偏移
+}
+
+//请求视频列表
+message req_video_list{
+    int32 videoType = 1;
+    int32 page = 2;
+    int32 pageSize = 3;
+    string language = 4;
+}
+
+//请求视频播放
+message req_video_play{
+    int32 videoId = 1;
+}
+
+//请求视频奖励
+message req_video_reward{
+}
+
+//连胜保护
+message req_protect_win_streak{
+}
+
+//获取友情福利数据
+message req_friend_reward_data{
+}
+//请求存档友情福利
+message req_save_friend_reward{
+
+}
+//请求友情福利 抽奖
+message req_lottery_friend_reward{
+}
+
+//请求大师赛排行榜数据
+message req_master_rank_data{
+    int32 page = 1;
+    int32 count = 2;
+}
+
+//请求大师赛我的排行
+message req_master_my_rank{
+}
+
+//请求清除大师赛老数据
+message req_master_clean_old{
+}
+
+//请求钻石消耗数量
+message req_diamond_consume{
+    int32 count = 1;
+}
+
+//请求上传fcm.token
+message req_upload_fcm_token{
+    string token = 1;
+}

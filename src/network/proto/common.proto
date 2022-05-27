@@ -1,0 +1,373 @@
+syntax = "proto3";
+package common;
+option go_package="protodef";
+
+//2维向量
+message vector2{
+	float x = 1;
+	float y = 2;
+}
+
+//3维向量
+message vector3{
+	float x = 1;
+	float y = 2;
+	float z = 3;
+}
+
+//角色实体
+message entity_role{
+	int32 id = 1;
+	int32 cfgId = 2;
+	int32 skinIdx = 3;
+	int32 hp = 4;
+	int32 maxHp = 5;
+	int32 born = 6;
+	vector2 pos = 7;
+	vector2 velocity = 8;
+	string name = 9;
+	bool lockHp = 10;	//是否锁血
+	int32 face = 11;	//朝向右侧
+	float deadTime = 12;//死亡事件
+    int32 anger = 13;   //怒气
+    int32 state = 14;   //角色状态
+}
+
+//角色实时信息
+message role_info{
+	int32 id = 1;
+	int32 hp = 2;
+	vector2 pos = 3;
+	vector2 velocity = 4;
+}
+
+//卡牌
+message entity_card{
+	int32 index = 1;
+	int32 id = 2;
+	int32 lv = 3;
+	int32 flag = 4;
+}
+
+//地图块实体
+message entity_block{
+	int32 id = 1;
+	int32 hp = 2;
+}
+
+//所有实体的实时状态
+message entity_all{
+    int32 frame = 1;
+    repeated common.entity_player players = 2;
+    repeated common.entity_block blocks = 3;
+    repeated common.entity_bullet bullets = 4;
+    repeated common.entity_buff buffs = 5;
+    repeated common.entity_summon summons = 6;
+	repeated int32 random_counts = 7;
+	string map_event_args = 8;
+	int32 map_event_state = 9;
+}
+
+//子弹
+message entity_bullet{
+	int32 id = 1;
+	int32 state = 2;
+	vector2 pos = 3;
+	vector2 velocity = 4;
+	int32 roleId = 5;
+	entity_card card = 6;
+	bool isChild = 7;
+	int32 instanceId = 8;
+    int32 roundId = 9;
+    int32 roundLife = 10;		//持续回合，气球和可乐
+	float delayTime = 11;		//延迟爆炸时间
+	float radius = 12;			//气球半径
+	repeated int32 targets = 13;//可乐目标id
+}
+
+//玩家实体
+message entity_player{
+	int64 id = 1;
+	int32 lv = 2;
+	int32 mp = 3;
+	int32 maxMp = 4;
+	int32 cupNum = 5;
+	string nickname = 6;
+	int32 roleType = 7;
+	int32 rank = 8;
+	string flag = 9;
+	bool hasSkill = 10;
+	int32 teamId = 11;    //队伍
+	entity_card mirrorCard = 12;
+	entity_card skillCard = 13;
+	repeated entity_role roles = 14;
+	repeated entity_card cards = 15;
+	repeated entity_card hands = 16;
+    repeated entity_card selects = 17;
+	int32 win_streak = 18; 		//连胜
+	int32 select_aircraft = 19; //座驾
+	int32 masters_rank = 20;    //大师赛排名
+	int32 excute_count = 21;	//ai出手次数
+}
+
+//buff实体
+message entity_buff{
+	int32 id = 1;			//buffConfigId
+	int64 sourceId = 2;	    //释放者id
+	int32 targetId = 3;		//目标Id，(召唤物是InstanceId)
+	int32 targetType = 4;	//目标类型 角色、砖块、召唤物
+	int32 roundId = 5;		//开始回合
+	int32 roundLife = 6;	//总回合
+	int32 roundChange = 7;	//已切回合
+	int32 instanceId = 8;	//唯一实例ID
+	int32 level = 9;	    //buff level
+	int32 state = 10;       //状态
+    int32 addCount = 11;    //已经添加次数
+	int32 damageCount = 12; //受到伤害次数
+}
+
+//summon实体
+message entity_summon{
+	int32 id = 1;			//configId
+	int32 instanceId = 2;	//唯一实例ID
+	int64 sourceId = 3;		//playerId
+	int32 hp = 4;			//血量
+	vector2 pos = 5;		//位置
+	string args = 6;		//参数(每个召唤物的参数都不太一样)
+	int32 roundId = 7;		//开始回合
+	int32 roundLife = 8;	//总回合
+	int32 roundChange = 9;	//已切回合
+	int32 state = 10;
+}
+
+//队伍实体
+message entity_team{
+	int32 talentId = 1;
+	int32 diceNum = 2;
+	int64 creatorID = 3;
+}
+
+//帧事件
+message key_frame{
+	int32 frameId = 1;
+	bytes bytes = 2;
+	int32 cmdID = 3;
+}
+
+//回合信息
+message round {
+	int32 roundId = 1;
+    int64 playerId = 2;
+    int32 roleId = 3;
+}
+
+//高光时刻
+message key_replay{
+	int32 ID = 1;		//高光的唯一ID
+	round round = 2;
+	int32 index = 3; 	//排序用
+    entity_all entities = 4;
+    repeated key_frame frames = 5;
+	int32 kill_count = 8;
+}
+
+message client_team{
+	int32 playerIndex = 1;
+	int32 maxMp = 2;
+    repeated common.client_player players= 3;
+}
+
+message client_server{
+	int32 id = 1;
+    int32 teamIndex = 2;
+    string map_event_args = 3;
+	int32 map_event_state = 4;
+	repeated common.client_team teams = 5;
+}
+
+message client_player{
+	int32 maxMp = 1;
+	int32 roleNum = 2;
+	int32 roleIndex = 3;
+	int32 shootCount = 4;
+	repeated common.entity_role roles = 5;
+	repeated common.entity_card cards = 6;
+	repeated common.entity_card hands = 7;
+	repeated common.entity_card useds = 8;
+}
+
+//服务器用
+message best_replay_pair{
+	int32 roundId = 1;
+    int64 playerId = 2;
+	repeated common.key_replay replays = 4;
+}
+
+//录屏数据
+message best_replay{
+	int32 map_id = 1;
+    int32 scene_id = 2;
+	int32 random_seed = 3;
+	repeated common.key_replay replays = 4;
+}
+
+//亮眼操作
+message dazzling_action{
+	int32 action_type = 1;
+	int32 action_value = 2;
+	int32 instanceId = 3;	//唯一实例ID
+}
+message dialog_attr{
+	int32 dialog_id = 1;
+    int64 playerId = 2;
+}
+
+//map的地块
+message map_block{
+	int32 id = 1;
+	int32 cid = 2;
+	int32 ex = 3;
+	int32 hp = 4;
+	repeated float ts = 5;
+    int32 shape = 6;
+}
+//map的死亡线
+message map_death{
+	int32 id = 1;
+	repeated float ts = 2;
+}
+message map_born{
+	repeated float ts = 4;
+}
+//map地图配置
+message map_entity{
+	int32 id = 1;
+	string name = 2;
+	repeated map_born borns =3;
+	repeated map_block dest = 4;
+	repeated map_block indest = 5;
+	repeated map_death death = 6;
+}
+
+//actionEnd的参数对
+message action_buff{
+	int32 id = 1;
+	int32 step = 2;
+}
+
+//存档实体
+message archive_entity{
+	string UserSave = 1;
+    string PackDataSave = 2;
+    string ShopDataSave = 3;
+    string AchieveSave = 4;
+    string DailyQuestDataSave = 5;
+    string AcornDataSave = 6;
+    string RankDataSave = 7;
+    string GMDataSave = 8;
+    string GuideSave = 9;
+    string AdventureSave = 10;
+    string ActiveSave = 11;
+    string AbTestSave = 12;
+    string DailySign = 13;
+    string VideoSave = 14;
+    string LuckyWheelSave = 15;
+    string MasterMatchSave = 16;
+    string MiniGameDataSave = 17;
+    string LimitGiftSave = 18;
+    string CharDataSave = 19;
+    string HomeDataSave = 20;
+    string FriendRewardDataSave = 21;
+    string BossDataSave = 22;
+    string RedDataSave = 23;
+    string PurchaseDataSave = 24;
+}
+
+message attri_entity{
+	int32 gold = 1;
+	int32 gem = 2;
+	int32 exp = 3;
+	int32 level = 4;
+	int32 leaf = 5;
+	int32 passLevel = 6;
+	int32 reward_cup = 7;
+	int32 matchCup = 8;
+	int32 sceneCup = 9;
+	int32 sceneLevel = 10;
+	int32 winStreak = 11;
+	int32 season = 12;
+	int32 Rank = 13;
+	int32 has_buy_pass = 14;
+	int32 newIcon = 15;
+	string country = 16;
+	int32 icon = 17;
+	int64 loginTime = 18;
+}
+
+message league_player{
+    int64 id = 1;
+	int32 lv = 2;
+	int32 rankCup = 3;
+	string nickname = 4;
+	int32 rank = 5;
+	string flag = 6;
+    int32 roleId = 7;
+	int32 skinIdx = 8;
+	int32 select_aircraft = 9; //座驾 
+	int32 fail_count = 10; //允许失败不扣分次数
+	bool is_online = 11;  //是否在线
+	int32 masters_rank = 12; 
+}
+
+message league_entity{
+    int64 league_id = 1;
+    string league_code = 2;
+    string league_name = 3;
+    string league_desc = 4;
+	int32 memberMaxCount = 5;
+	int32 memberCount = 6;
+	string flag = 7;
+	int32 crownNum = 8;
+	int64 creator_id = 9;
+	string creator_name = 10;
+	int32 creator_masters_rank = 11;
+}
+
+message team_player{
+	int64 id = 1;
+	bool is_ready = 2;
+	int32 fail_count = 3;
+	int32 reward_cup = 4;
+}
+
+message battle_detail{
+	int64 player_id = 1;
+	int32 damage_ratio = 2;
+	int32 heal_ratio = 3;
+}
+
+message settle_change{
+    int32 match_cup = 1;//实力值变化
+    int32 rank_cup = 2; //排行榜杯数变化
+    int32 scene_cup = 3; // 场景杯数变化
+    int32 exp = 4;      //经验变化值
+    int32 leaf = 5;     
+}
+
+message team_entity{
+    int64 team_id = 1;
+    int64 creator_id = 2;
+    int32 talent_id = 3;
+    int32 pvp_count = 4;
+    repeated team_player team_players = 5;
+    repeated entity_player players = 6;
+}
+
+message mail_entity{
+	int64 mail_id = 1;
+	int32 mail_type = 2;
+    league_player inviter = 3;
+    league_entity league = 4;
+    team_entity team = 5;
+	int32 error_code = 6;
+}

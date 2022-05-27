@@ -1,0 +1,193 @@
+syntax = "proto3";
+package match;
+option go_package="protodef";
+import "common.proto";
+
+//随机匹配req
+message req_match_game {
+    int32 scene_level = 1;
+    bool upgrade_card = 2;
+    common.entity_player player = 3;
+    int32 game_type = 4;
+}
+
+//匹配结果
+message rsp_match_game {
+    int32 error_code = 1;
+    int32 match_type = 2;
+    int32 robot_id = 3;
+}
+
+//取消匹配
+message req_cancel_match {
+}
+message ntf_cancel_match {
+}
+
+//创建房间req
+message req_create_room {
+	int32 scene_level = 1;
+    int32 pvp_count = 2;
+	common.entity_player player = 3;
+}
+
+//解散房间
+message req_delete_room {
+}
+message ntf_delete_room {
+}
+
+//创建房间rsp
+message rsp_create_room {
+    int32 error_code = 1;
+    int32 room_code = 2;
+}
+
+//加入房间req
+message req_join_room {
+    int32 room_code = 1;
+    common.entity_player player = 2;
+}
+
+//加入房间rsp
+message rsp_join_room{
+	int32 error_code = 1;
+}
+
+//房间准备好通知
+message ntf_room_ready {
+    string room_id = 1;
+    int32 map_id = 2;
+    int32 scene_id = 3;
+    int32 game_type = 4;//普通赛，好友房，大师赛，活动赛，boss，多人赛
+    int32 activity_id = 5; //活动ID
+    int32 random_seed = 6; //随机数种子
+    repeated common.entity_player players = 7;
+    repeated common.entity_team team_entitys = 8;
+	repeated common.dialog_attr dialog_arr = 9; //聊天索引
+    common.map_entity map_data = 10;
+    int32 args = 12; //不同游戏类型所需要的参数
+}
+
+//随机匹配（活动）
+message req_match_activity {
+    int32 scene_level = 1;
+	common.entity_player player = 2;
+}
+
+//匹配结果（活动）
+message rsp_match_activity {
+    int32 error_code = 1;
+    int32 match_type = 2;
+    int32 robot_id = 3;
+}
+
+//取消匹配（活动）
+message req_cancel_match_activity {
+}
+message ntf_cancel_match_activity {
+}
+
+
+//创建队伍
+message req_create_team{
+    int32 pvp_count = 1;
+    common.entity_player player = 2;
+}
+//3022=match.rsp_create_team
+message rsp_create_team{
+	int32 error_code = 1;
+}
+
+//请求我的队伍信息
+message req_my_team{
+}
+//3035=match.ntf_my_team
+message ntf_my_team{
+	int32 error_code = 1;
+    common.team_entity team = 2;
+}
+
+//邀请加入队伍，回复邮件
+message req_invite_join_team{
+    int64 playerId = 1;
+}
+
+message rsp_invite_join_team{
+    int32 error_code = 1;
+}
+
+//同意加入队伍
+message req_agree_join_team{
+	int64 team_id = 1;
+	int64 inviterId = 2;
+    common.entity_player player = 3;
+}
+//3039=match.rsp_agree_join_team
+message rsp_agree_join_team{
+	int32 error_code = 1;
+}
+
+//谁邀请谁进入房间广播
+message ntf_anyone_join_team{
+	int64 playerId = 1;
+	int64 inviterId = 2;
+    int32 teamType = 3;
+}
+
+//请求离开队伍
+message req_leave_team{
+}
+//3026=match.ntf_leave_team
+message ntf_leave_team{
+    int32 error_code = 1;
+}
+
+//请求解散队伍
+message req_break_team{
+}
+//3032=match.ntf_break_team
+message ntf_break_team{
+    int32 error_code = 1;
+}
+
+//请求搜索队友
+message req_search_palyers{
+}
+//3028=match.ntf_search_players
+message ntf_search_players{
+    int32 error_code = 1;
+}
+
+//队伍成员准备
+message req_team_member_ready{
+    int64 playerId = 1;
+}
+//3034=match.ntf_team_member_ready
+message ntf_team_member_ready{
+    int64 playerId = 1;
+    int32 error_code = 2;
+}
+
+//队伍天赋选择
+message req_select_team_talentId{
+    int32 talentId = 1;
+}
+//3038=match.rsp_select_team_talentId
+message rsp_select_team_talentId{
+    int32 talentId = 1;
+    int32 error_code = 2;
+}
+
+//团队匹配
+message req_match_team_game {
+    int64 team_id = 1;
+    int32 talentId = 2;
+    bool upgrade_card = 3;
+    repeated common.entity_player players = 4;
+}
+//3030=match.ntf_match_team_game
+message ntf_match_team_game {
+    int32 error_code = 1;
+    int32 match_type = 2;
+}

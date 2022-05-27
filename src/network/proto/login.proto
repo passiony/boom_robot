@@ -1,0 +1,90 @@
+syntax = "proto3";
+package login;
+option go_package="protodef";
+import "common.proto";
+
+// //验证客户端唯一性
+// message req_verfy {
+// 	int64 player_id = 1;
+// 	string idfa = 2;
+// 	string guid = 3;
+// 	int32 language = 4;
+// 	string version = 5;
+// 	string device = 6;
+// 	string platform = 7;
+// }
+
+// //验证客户端唯一性返回
+// message rsp_verfy {
+//     int64 player_id = 1;
+//     int32 game_state = 2;		//游戏状态： 0-大厅 1-匹配中 2-正在进入游戏 3-游戏中
+// 	string name = 3; 			//玩家名字
+// 	int32 icon = 4; 			//玩家头像
+// 	int32 error_code = 5;		//错误码
+// 	int32 win_streak = 6;
+// 	int32 win_streak_exp = 7;	//连胜经验
+// 	bool Win_Streak_Protect = 8;//连胜保护标志
+// }
+
+//登录
+message req_login {
+    string idfa = 1;
+    string idfv = 2;
+    string guid = 3;
+    string device = 4;
+    string platform = 5;
+    string openType = 6;
+    string openId = 7;
+    string token = 8;
+    string appVersion = 9;
+}
+
+//登录rsp
+message rsp_login {
+    string token = 1;
+    int64 playerId = 2;
+	string playerName = 3;
+    int64 data_version = 4;
+    int32 gameState = 5;
+	int32 gameType = 6;
+    bool isNew = 7;
+    string reward = 8;
+	int32 error_code = 9;
+    common.archive_entity archive = 10;
+    common.attri_entity attri = 11;
+    string userSig = 12;
+}
+
+//服务端提示消息
+message ntf_msg_tip {
+    string title = 1;
+    string message = 2;
+    string button = 3;
+}
+
+// 心跳
+message req_heart {
+}
+
+message rsp_heart {
+}
+
+//通知客户端下线
+message ntf_kick_out {
+	int32 reason = 1; 			//下线原因0:顶号 1:封号
+}
+
+//玩家状态变化
+message ntf_state_change {
+	int32 gameState = 1; 		//游戏状态：0:大厅, 1:匹配中, 2:正在进入游戏, 3:游戏中, 4:重新进入
+    int32 gameType = 2;         //游戏类型：0:normal, 1:friend, 2:Acitve, 3:master， 4:Boss, 5.MultiPvp
+}
+
+//通知玩家奖杯变化
+message req_update__cup{
+    int32 cup = 1; 				//奖杯数
+}
+message ntf_player_cup{
+    int32 cup = 1; 				//奖杯数
+    int32 rank = 2; 			// 段位
+}

@@ -1,0 +1,172 @@
+syntax = "proto3";
+package protodef;
+option go_package = "protodef";
+import "common.proto";
+
+message Packet {
+    int32 cmd_id = 1;
+    bytes data = 2;
+}
+
+
+message ServerPacket {
+    int64 session_id = 1;
+    int32 cmd_id = 2;
+    bytes data = 3;
+    int64 player_id = 4;
+}
+
+message client_connect_packet {
+    int32 gate_id = 1;
+    int64 session_id = 2;
+	string ip = 3;
+	
+}
+message ClientDisConnectPacket {
+    int64 player_id = 1;
+	int64 session_id = 2;
+}
+
+message req_server_id {
+    int32 server_type = 1;
+}
+
+message rsp_server_id {
+    int32 serverID = 1;
+}
+
+//大厅通知房间服务器 有玩家需要进入房间
+message w2g_player {
+    int32 gate_id = 1;
+    common.entity_player player = 2;
+	int64 player_gate_session = 3;
+	int32 reward_cup = 4;  //排行榜杯数
+	client_info c_info = 5;
+	int64 leagueID = 6;
+
+}
+message client_info {
+	int64 playerID = 1;
+	string idfa = 2;
+	string guid = 3;
+	int32 language = 4;
+	string version = 5;
+	string device = 6;
+	string platform = 7;
+	int32 appVersion = 9;
+}
+
+message map_event_param {
+	int32 map_event_interval = 1;
+	int32 map_event_last = 2;
+}
+message w2g_req_enter_room {
+    repeated w2g_player players = 1;
+    int32 room_number = 2; //玩家创建的房间号码
+    int32 mapID = 3; //地图ID
+    int32 bg_id = 4; //背景
+    int32 map_difficulty = 5; //地图难度
+    int32 activity_id = 6; //活动ID
+    repeated int32 mps = 7; //先后手费用
+	map_event_param map_event_param = 8;
+	string scene_event = 9;
+	common.map_entity map_data = 10;
+	int32 game_type = 11;
+	int32 args = 12; //bossID
+	repeated common.entity_team team_entitys = 13 ; //用于上传小队的天赋
+	int32 first_team_index = 14;
+	int64 first_playerID = 15;
+	int32 first_role_index = 16;
+}
+
+//房间服务器通知大厅 房间创建完成
+message g2w_player {
+    common.entity_player player = 1;
+    int32 gameID = 2; //房间服务器ID
+    int32 dia_id = 3; //进入房间的时候的对话ID
+}
+message g2w_rsp_enter_room {
+    repeated g2w_player players = 1;
+    int32 room_number = 2;
+    int32 map_id = 3;
+    int32 scene_id = 4;
+	int64 roomID = 5; //房间ID
+	int32 activity_id = 6; //活动ID
+	int32 rand_seed = 7; // 随机卡牌的随机种子
+    int32 game_type = 8;
+	int32 args = 9; //
+	repeated common.entity_team team_entitys = 10 ;
+}
+//大厅通知网关 玩家所在的房间服务器
+message req_set_player_game_id {
+    int32 game_id = 1; //房间服务器ID
+    int64 session_id = 2; //玩家的sessionID
+}
+
+//大厅通知网关 玩家的唯一ID
+message req_set_player_id {
+    int64 player_id = 1; //玩家ID
+    int64 session_id = 2; //玩家的sessionID
+}
+
+//房间服务器通知大厅 游戏结束
+message r2w_exit_room {
+    repeated r2w_exit_player players = 1; //玩家
+    int64 win_player = 2;
+    int32 frame = 3;
+    int32 room_type = 4; //0-匹配 1-房间 2-活动
+    int64 roomID = 5; //0-匹配 1-房间
+    int32 result_type = 6; //投降还是正常结束
+	common.entity_all entities = 7;
+	int32 activity_id = 8;  //活动ID
+	int64 first_playId = 9;  //先手玩家ID
+	int32 win_team = 10;  //赢的队伍
+	repeated common.battle_detail battle_detail = 11;
+}
+
+message r2w_exit_player {
+    int64 player_id = 1;
+    int32 kill_count = 2; //两个玩家总kill
+    int32 self_kill_count = 3; //两个玩家总kill
+	common.best_replay best_replay = 4;
+	repeated common.dazzling_action dazzling_actions = 5;
+	int32 battle_time = 6; //对战时长,掉线时间不算
+	int32 role_type = 7;
+	int32 team = 8;
+	int32 rank = 9;
+	int64 leagueID = 10;
+    bool is_bot = 11;
+    bool is_creator = 12;
+}
+
+
+message w2g_kick_player {
+    int64 session_id = 1; //玩家的sessionID
+    int32 reason = 2; //踢玩家下线原因
+}
+
+message g2r_update_gate {
+    int64 session_id = 1; //
+    int64 player_id = 2; //
+    int32 gate_id = 3; //
+}
+//世界服通知网关打印日志
+message w2g_print_log {
+}
+//变天
+message day_change {
+	bool change_month = 1; //是否变月
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
