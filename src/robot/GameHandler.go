@@ -1,9 +1,9 @@
 package robot
 
 import (
+	"ROBOT/src/log"
 	protodef "ROBOT/src/network/protogo"
 	"github.com/golang/protobuf/proto"
-	"log"
 )
 
 type GameHander struct {
@@ -16,12 +16,12 @@ func (l *GameHander) Init(events map[int32]func(robot *Robot, msg *protodef.Pack
 }
 
 func (l *GameHander) OnGameReconnect(robot *Robot, msg *protodef.Packet) {
-	log.Println("重连 1")
+	log.Info("重连 1")
 	robot.ReconnectFinish()
 }
 
 func (l *GameHander) OnReconnectFinish(robot *Robot, msg *protodef.Packet) {
-	log.Println("重连 2")
+	log.Info("重连 2")
 	serverPacket := &protodef.NtfReconnectFinish{}
 	err := proto.Unmarshal(msg.Data, serverPacket)
 	if err != nil {
@@ -32,6 +32,6 @@ func (l *GameHander) OnReconnectFinish(robot *Robot, msg *protodef.Packet) {
 }
 
 func (l *GameHander) OnGameStart(robot *Robot, msg *protodef.Packet) {
-	log.Println("游戏开始")
+	log.Info("游戏开始")
 	robot.OnGameStart()
 }

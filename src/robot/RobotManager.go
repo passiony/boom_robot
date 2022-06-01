@@ -1,13 +1,13 @@
 package robot
 
 import (
-	"log"
+	"ROBOT/src/log"
 	"sync"
 	"time"
 )
 
 type RobotManager struct {
-	robots      map[uint64]*Robot
+	robots      map[int64]*Robot
 	mutex       sync.RWMutex
 	maxRobotNum uint32
 	freq        int64
@@ -20,7 +20,7 @@ var robMgr *RobotManager
 func GetRobotMgr() *RobotManager {
 	if robMgr == nil {
 		robMgr = &RobotManager{
-			robots: make(map[uint64]*Robot),
+			robots: make(map[int64]*Robot),
 		}
 	}
 	return robMgr
@@ -32,8 +32,8 @@ func (m *RobotManager) Init(maxRobotNum uint32, freq int64) {
 	go m.timeAction()
 }
 
-func (m *RobotManager) createRobot(id uint64) {
-	log.Println("添加机器人:", id)
+func (m *RobotManager) createRobot(id int64) {
+	log.Info("添加机器人:%d", id)
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 	rob := NewRobot(id)
@@ -48,7 +48,7 @@ func (m *RobotManager) timeAction() {
 		select {
 		case <-createTick.C:
 			if m.robotNum < m.maxRobotNum {
-				m.createRobot(uint64(10000000 + m.robotNum))
+				m.createRobot(int64(10000000 + m.robotNum))
 				m.robotNum++
 			}
 		}

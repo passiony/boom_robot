@@ -1,22 +1,24 @@
 package robot
 
 import (
+	"ROBOT/src/log"
 	protodef "ROBOT/src/network/protogo"
-	"log"
 	"math/rand"
+	"strconv"
 	"time"
 )
 
 type Robot struct {
-	PlayerId uint64
+	PlayerId int64
+	Token    string
 	Net      *RobotNetwork
-	roleId   uint32
-	cards    []uint32
+	roleId   int32
+	cards    []int32
 	opera    int32
 	Players  []*protodef.EntityPlayer
 }
 
-func NewRobot(id uint64) *Robot {
+func NewRobot(id int64) *Robot {
 	return &Robot{
 		PlayerId: id,
 	}
@@ -24,12 +26,12 @@ func NewRobot(id uint64) *Robot {
 
 func (r *Robot) Init() {
 	r.Net = NewNetwork(r)
-	log.Println("机器人初始化成功")
+	log.Info("机器人初始化成功")
 	rand.Seed(time.Now().UnixNano())
-	r.roleId = uint32(rand.Intn(14))
-	r.cards = make([]uint32, 8)
+	r.roleId = int32(rand.Intn(14))
+	r.cards = make([]int32, 8)
 	for i := 0; i < 8; i++ {
-		r.cards[i] = uint32(100 + i)
+		r.cards[i] = int32(100 + i)
 	}
 	go r.Update()
 }
@@ -43,6 +45,11 @@ func (r *Robot) Update() {
 			r.HeatBeat()
 		}
 	}
+}
+
+func (r *Robot) OnLoginSuccess(rspLogin *protodef.RspLogin) {
+	r.PlayerId = rspLogin.PlayerId
+	r.Token = rspLogin.Token
 }
 
 func (r *Robot) OnEnterRoom(players []*protodef.EntityPlayer) {
@@ -81,13 +88,13 @@ func (r *Robot) operation() {
 }
 
 func (r *Robot) Login() {
-	log.Println("Login", r.PlayerId)
+	log.Info("Login:%d", r.PlayerId)
 	req := &protodef.ReqLogin{}
-	req.Idfa = string(r.PlayerId)
-	req.Idfv = string(r.PlayerId)
-	req.Guid = string(r.PlayerId)
+	req.Idfa = "idfa" + strconv.FormatInt(r.PlayerId, 10)
+	req.Idfv = "idfv" + strconv.FormatInt(r.PlayerId, 10)
+	req.Guid = "gillar-" + strconv.FormatInt(r.PlayerId, 10)
 	req.Device = "linux"
-	req.Platform = "robot"
+	req.Platform = "linux-robot"
 	req.AppVersion = "2.2.2"
 	r.Net.ReqLogin(req)
 }
@@ -98,7 +105,7 @@ func (r *Robot) HeatBeat() {
 }
 
 func (r *Robot) MatchGame() {
-	log.Println("MatchGame", r.PlayerId)
+	log.Info("MatchGame", r.PlayerId)
 
 	req := &protodef.ReqMatchGame{}
 	req.SceneLevel = 1
@@ -138,26 +145,26 @@ func (r *Robot) MatchGame() {
 }
 
 func (r *Robot) Reconnect() {
-	log.Println("Reconnect", r.PlayerId)
+	log.Info("Reconnect:%d", r.PlayerId)
 	req := &protodef.ReqGameReconnect{}
 	r.Net.ReqReconnect(req)
 }
 
 func (r *Robot) ReconnectFinish() {
-	log.Println("ReconnectFinish", r.PlayerId)
+	log.Info("ReconnectFinish:%d", r.PlayerId)
 	req := &protodef.ReqReconnectFinish{}
 	r.Net.ReqReconnectFinish(req)
 }
 
 func (r *Robot) GameReady() {
-	log.Println("GameReady", r.PlayerId)
+	log.Info("GameReady:%d", r.PlayerId)
 
 	req := &protodef.ReqGameReady{}
 	r.Net.ReqGameStart(req)
 }
 
 func (r *Robot) SelectCards() {
-	//log.Println("SelectCards", r.PlayerId)
+	//log.Info("SelectCards:%d", r.PlayerId)
 
 	req := &protodef.ReqSelectCards{}
 	req.Cards = make([]*protodef.EntityCard, 1)
@@ -171,7 +178,7 @@ func (r *Robot) SelectCards() {
 }
 
 func (r *Robot) SelectRole() {
-	//log.Println("SelectRole", r.PlayerId)
+	//log.Info("SelectRole:%d", r.PlayerId)
 
 	req := &protodef.ReqSelectRole{}
 	req.Frame = 0
@@ -179,7 +186,7 @@ func (r *Robot) SelectRole() {
 }
 
 func (r *Robot) FingerMove() {
-	//log.Println("FingerMove", r.PlayerId)
+	//log.Info("FingerMove:%d", r.PlayerId)
 
 	req := &protodef.ReqFingerMove{}
 	req.Dir = &protodef.Vector2{}
@@ -189,7 +196,7 @@ func (r *Robot) FingerMove() {
 }
 
 func (r *Robot) ShootBulelt() {
-	log.Println("ShootBulelt", r.PlayerId)
+	//log.Info("ShootBulelt:%d", r.PlayerId)
 
 	req := &protodef.ReqShootBullet{}
 	req.Dir = &protodef.Vector2{}
@@ -208,7 +215,7 @@ func (r *Robot) ShootBulelt() {
 }
 
 func (r *Robot) ActionEnd() {
-	//log.Println("ActionEnd", r.PlayerId)
+	//log.Info("ActionEnd:%d", r.PlayerId)
 
 	req := &protodef.ReqActionEnd{}
 	req.Type = 1

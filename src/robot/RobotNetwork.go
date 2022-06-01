@@ -2,6 +2,7 @@ package robot
 
 import (
 	"ROBOT/src/config"
+	"ROBOT/src/log"
 	protodef "ROBOT/src/network/protogo"
 	"errors"
 	"fmt"
@@ -10,7 +11,6 @@ import (
 	_ "github.com/davyxu/cellnet/peer/tcp"
 	"github.com/davyxu/cellnet/proc"
 	"github.com/golang/protobuf/proto"
-	"log"
 	"time"
 )
 
@@ -60,11 +60,11 @@ func (n *RobotNetwork) connect(netCfg *config.NetConfig) {
 
 func (n *RobotNetwork) onConnect(session cellnet.Session) {
 	n.session = session
-	log.Println("onConnect:", n.robot.PlayerId)
+	log.Info("onConnect:%d", n.robot.PlayerId)
 	n.robot.Login()
 }
 func (n *RobotNetwork) onDisconnect(session cellnet.Session) {
-	log.Println("onDisconnect:", n.robot.PlayerId)
+	log.Info("onDisconnect:%d", n.robot.PlayerId)
 }
 
 func (n *RobotNetwork) onServerPacket(msg *protodef.Packet) {
@@ -84,7 +84,7 @@ func GetProtoData(msg interface{}) ([]byte, error) {
 func (n *RobotNetwork) sendMsg(cmdId int32, msg interface{}) {
 	bytes, err := GetProtoData(msg)
 	if err != nil {
-		log.Println("%d sendMsg %s", err.Error())
+		log.Info("%d sendMsg %s", err.Error())
 		return
 	}
 

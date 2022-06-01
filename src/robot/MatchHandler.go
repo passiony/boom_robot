@@ -1,9 +1,9 @@
 package robot
 
 import (
+	"ROBOT/src/log"
 	protodef "ROBOT/src/network/protogo"
 	"github.com/golang/protobuf/proto"
-	"log"
 )
 
 type MatchHander struct {
@@ -21,12 +21,12 @@ func (l *MatchHander) OnRspMatch(robot *Robot, msg *protodef.Packet) {
 		return
 	}
 	if serverPacket.ErrorCode != 0 {
-		log.Println("匹配错误：", serverPacket.ErrorCode)
+		log.Info("匹配错误：", serverPacket.ErrorCode)
 	}
 }
 
 func (l *MatchHander) OnRoomReady(robot *Robot, msg *protodef.Packet) {
-	log.Println("匹配成功")
+	log.Info("匹配成功")
 	serverPacket := &protodef.NtfRoomReady{}
 	err := proto.Unmarshal(msg.Data, serverPacket)
 	if err != nil {
