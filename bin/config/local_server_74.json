@@ -1,0 +1,13 @@
+{
+  "server": {
+    "ip": "10.10.0.74",
+    "port": 3655
+  },
+  "log": {
+    "maxlines": 10000,
+    "maxsize": 10000000,
+    "log_path": "./bin/logs/robot.log",
+    "log_level": 7,
+    "log_console": 1
+  }
+}
