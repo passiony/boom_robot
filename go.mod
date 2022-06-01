@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/davyxu/cellnet v4.1.0+incompatible
-	github.com/golang/glog v1.0.0
 	github.com/golang/protobuf v1.5.2
 )
 
