@@ -157,7 +157,7 @@ func (r *Robot) GameReady() {
 }
 
 func (r *Robot) SelectCards() {
-	log.Println("SelectCards", r.PlayerId)
+	//log.Println("SelectCards", r.PlayerId)
 
 	req := &protodef.ReqSelectCards{}
 	req.Cards = make([]*protodef.EntityCard, 1)
@@ -171,7 +171,7 @@ func (r *Robot) SelectCards() {
 }
 
 func (r *Robot) SelectRole() {
-	log.Println("SelectRole", r.PlayerId)
+	//log.Println("SelectRole", r.PlayerId)
 
 	req := &protodef.ReqSelectRole{}
 	req.Frame = 0
@@ -179,7 +179,7 @@ func (r *Robot) SelectRole() {
 }
 
 func (r *Robot) FingerMove() {
-	log.Println("FingerMove", r.PlayerId)
+	//log.Println("FingerMove", r.PlayerId)
 
 	req := &protodef.ReqFingerMove{}
 	req.Dir = &protodef.Vector2{}
@@ -208,7 +208,7 @@ func (r *Robot) ShootBulelt() {
 }
 
 func (r *Robot) ActionEnd() {
-	log.Println("ActionEnd", r.PlayerId)
+	//log.Println("ActionEnd", r.PlayerId)
 
 	req := &protodef.ReqActionEnd{}
 	req.Type = 1
