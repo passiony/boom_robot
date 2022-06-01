@@ -105,7 +105,7 @@ func (r *Robot) HeatBeat() {
 }
 
 func (r *Robot) MatchGame() {
-	log.Info("MatchGame", r.PlayerId)
+	log.Info("MatchGame:%d", r.PlayerId)
 
 	req := &protodef.ReqMatchGame{}
 	req.SceneLevel = 1
