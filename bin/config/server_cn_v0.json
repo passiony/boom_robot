@@ -2,5 +2,12 @@
   "server": {
     "ip": "52.83.96.58",
     "port": 3655
+  },
+  "log": {
+    "maxlines": 10000,
+    "maxsize": 10000000,
+    "log_path": "./bin/logs/robot.log",
+    "log_level": 7,
+    "log_console": 1
   }
 }

@@ -2,11 +2,11 @@ package main
 
 import (
 	"ROBOT/src/config"
+	"ROBOT/src/log"
 	_ "ROBOT/src/network/mytcp"
 	"ROBOT/src/robot"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,13 +14,13 @@ import (
 )
 
 func main() {
-	log.Println("[启动] 开始机器人测试")
 	confPath := flag.String("conf", "", "Server configuration file path")
 	flag.Parse()
 	config.LoadConfig(*confPath)
+	log.InitLog(config.GetConfig().Log)
 
+	log.Info("[启动] 开始机器人测试")
 	robot.GetRobotMgr().Init(2000, 1000)
-
 	wait()
 }
 
@@ -39,6 +39,6 @@ func wait() {
 	case <-timeout.C:
 		panic(fmt.Sprintf("close timeout (signal: %v)", sig))
 	case <-wait:
-		log.Println("closing down (signal: %v)", sig)
+		log.Info("closing down (signal: %v)", sig)
 	}
 }
