@@ -92,7 +92,9 @@ func (n *RobotNetwork) sendMsg(cmdId int32, msg interface{}) {
 		CmdId: cmdId,
 		Data:  bytes,
 	}
-	n.session.Send(packet)
+	if n.session != nil {
+		n.session.Send(packet)
+	}
 }
 
 func (n *RobotNetwork) ReqLogin(req *protodef.ReqLogin) {
