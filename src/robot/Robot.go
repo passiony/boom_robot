@@ -64,6 +64,11 @@ func (r *Robot) OnGameStart() {
 	go r.operation()
 }
 
+func (r *Robot) OnGameOver() {
+	r.opera = 0
+	r.MatchGame()
+}
+
 func (r *Robot) operation() {
 	createTick := time.NewTicker(100 * time.Millisecond)
 	defer createTick.Stop()
@@ -82,6 +87,10 @@ func (r *Robot) operation() {
 				r.ShootBulelt()
 			} else if op == 5 {
 				r.ActionEnd()
+			}
+			if r.opera > 200 {
+				r.KillAll()
+				return
 			}
 		}
 	}
@@ -224,6 +233,22 @@ func (r *Robot) ActionEnd() {
 	}
 	for i, player := range r.Players {
 		req.Entities.Players[i] = player
+	}
+	r.Net.ReqActionEnd(req)
+}
+
+func (r *Robot) KillAll() {
+	//log.Info("ActionEnd:%d", r.PlayerId)
+	req := &protodef.ReqActionEnd{}
+	req.Type = 1
+	req.Entities = &protodef.EntityAll{
+		Players: make([]*protodef.EntityPlayer, len(r.Players)),
+	}
+	for i, player := range r.Players {
+		req.Entities.Players[i] = player
+		for _, role := range player.Roles {
+			role.Hp = 0
+		}
 	}
 	r.Net.ReqActionEnd(req)
 }
