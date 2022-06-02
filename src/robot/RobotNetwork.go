@@ -65,6 +65,7 @@ func (n *RobotNetwork) onConnect(session cellnet.Session) {
 }
 func (n *RobotNetwork) onDisconnect(session cellnet.Session) {
 	log.Info("onDisconnect:%d", n.robot.PlayerId)
+	n.robot.Disconnect()
 }
 
 func (n *RobotNetwork) onServerPacket(msg *protodef.Packet) {
