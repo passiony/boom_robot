@@ -111,6 +111,7 @@ func (r *Robot) Login() {
 	req.Idfa = r.Idfa
 	req.Idfv = r.Idfa
 	req.Guid = r.Guid
+	req.Token = r.Token
 	req.Device = "linux"
 	req.Platform = "linux-robot"
 	req.AppVersion = "2.2.2"
