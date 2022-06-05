@@ -12,6 +12,8 @@ import (
 type Robot struct {
 	PlayerId int64
 	Token    string
+	Guid     string
+	Idfa     string
 	Net      *RobotNetwork
 	roleId   int32
 	cards    []int32
@@ -21,7 +23,8 @@ type Robot struct {
 
 func NewRobot(id int64) *Robot {
 	return &Robot{
-		PlayerId: id,
+		Guid: "gillar-" + strconv.FormatInt(id, 10),
+		Idfa: "idfa" + strconv.FormatInt(id, 10),
 	}
 }
 
@@ -105,9 +108,9 @@ func (r *Robot) Disconnect() {
 func (r *Robot) Login() {
 	log.Info("Login:%d", r.PlayerId)
 	req := &protodef.ReqLogin{}
-	req.Idfa = "idfa" + strconv.FormatInt(r.PlayerId, 10)
-	req.Idfv = "idfv" + strconv.FormatInt(r.PlayerId, 10)
-	req.Guid = "gillar-" + strconv.FormatInt(r.PlayerId, 10)
+	req.Idfa = r.Idfa
+	req.Idfv = r.Idfa
+	req.Guid = r.Guid
 	req.Device = "linux"
 	req.Platform = "linux-robot"
 	req.AppVersion = "2.2.2"
