@@ -102,6 +102,10 @@ func (n *RobotNetwork) ReqLogin(req *protodef.ReqLogin) {
 	n.sendMsg(protodef.LOGIN_REQ_LOGIN, req)
 }
 
+func (n *RobotNetwork) ReqCreateLeague(req *protodef.ReqCreateLeague) {
+	n.sendMsg(protodef.LEAGUE_REQ_CREATE_LEAGUE, req)
+}
+
 func (n *RobotNetwork) ReqHeart(req *protodef.ReqHeart) {
 	n.sendMsg(protodef.LOGIN_REQ_HEART, req)
 }

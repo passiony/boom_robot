@@ -12,6 +12,7 @@ type MatchHander struct {
 func (l *MatchHander) Init(events map[int32]func(robot *Robot, msg *protodef.Packet)) {
 	events[protodef.MATCH_NTF_ROOM_READY] = l.OnRoomReady
 	events[protodef.MATCH_RSP_MATCH_GAME] = l.OnRspMatch
+	events[protodef.LEAGUE_NTF_CREATE_LEAGUE] = l.OnNtfCreateLeague
 }
 
 func (l *MatchHander) OnRspMatch(robot *Robot, msg *protodef.Packet) {
@@ -35,4 +36,15 @@ func (l *MatchHander) OnRoomReady(robot *Robot, msg *protodef.Packet) {
 
 	robot.OnEnterRoom(serverPacket.Players)
 	robot.GameReady()
+}
+
+func (l *MatchHander) OnNtfCreateLeague(robot *Robot, msg *protodef.Packet) {
+	serverPacket := &protodef.NtfCreateLeague{}
+	err := proto.Unmarshal(msg.Data, serverPacket)
+	if err != nil {
+		return
+	}
+	if serverPacket.ErrorCode == 0 {
+		log.Info("创建工会成功")
+	}
 }

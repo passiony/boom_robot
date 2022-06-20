@@ -20,7 +20,7 @@ func main() {
 	log.InitLog(config.GetConfig().Log)
 
 	log.Info("[启动] 开始机器人测试")
-	robot.GetRobotMgr().Init(2000, 1000)
+	robot.GetRobotMgr().Init(200, 100)
 	wait()
 }
 

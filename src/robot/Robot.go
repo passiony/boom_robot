@@ -40,6 +40,14 @@ func (r *Robot) Init() {
 	go r.Update()
 }
 
+func (r *Robot) CreateLeague() {
+	log.Info("创建工会")
+	req := &protodef.ReqCreateLeague{}
+	req.LeagueName = "L" + strconv.FormatInt(r.PlayerId, 10)
+	req.LeagueDesc = "desc-" + strconv.FormatInt(r.PlayerId, 10)
+	r.Net.ReqCreateLeague(req)
+}
+
 func (r *Robot) Update() {
 	createTick := time.NewTicker(2 * time.Second)
 	defer createTick.Stop()
@@ -54,6 +62,8 @@ func (r *Robot) Update() {
 func (r *Robot) OnLoginSuccess(rspLogin *protodef.RspLogin) {
 	r.PlayerId = rspLogin.PlayerId
 	r.Token = rspLogin.Token
+
+	r.CreateLeague()
 }
 
 func (r *Robot) OnEnterRoom(players []*protodef.EntityPlayer) {

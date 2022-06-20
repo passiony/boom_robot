@@ -19,17 +19,17 @@ func (l *LoginHander) OnLogin(robot *Robot, msg *protodef.Packet) {
 	serverPacket := &protodef.RspLogin{}
 	err := proto.Unmarshal(msg.Data, serverPacket)
 	if err != nil {
-		return
+		log.Info(err.Error())
 	}
-
 	if serverPacket.ErrorCode != 0 {
 		log.Info("登录错误：", serverPacket.ErrorCode)
 	}
 
 	robot.OnLoginSuccess(serverPacket)
-	if serverPacket.GameState == 0 {
-		robot.MatchGame()
-	} else {
-		robot.Reconnect()
-	}
+
+	//if serverPacket.GameState == 0 {
+	//	robot.MatchGame()
+	//} else {
+	//	robot.Reconnect()
+	//}
 }
