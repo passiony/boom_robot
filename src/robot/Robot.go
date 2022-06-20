@@ -1,7 +1,6 @@
 package robot
 
 import (
-	"ROBOT/src/config"
 	"ROBOT/src/log"
 	protodef "ROBOT/src/network/protogo"
 	"math/rand"
@@ -111,8 +110,7 @@ func (r *Robot) operation() {
 }
 
 func (r *Robot) Disconnect() {
-	log.Info("重连server")
-	r.Net.connect(config.GetConfig().Server)
+	log.Info("disconnect")
 }
 
 func (r *Robot) Login() {
